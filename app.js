@@ -1,9 +1,13 @@
 // #1 Define vars container - ticketPrice
+// DOM Elements
 const container = document.querySelector('.container')
 const seats = document.querySelectorAll('.row .seat:not(.occupied)')
 const count = document.getElementById('count')
 const total = document.getElementById('total')
 const movieSelect = document.getElementById('movie')
+
+//  #10 Populate UI
+populateUI()
 
 // ticketPrice must be "let" because it will change in the select field
 let ticketPrice = +movieSelect.value
@@ -34,6 +38,29 @@ function updateSelectedCount() {
 	total.innerText = selectedSeatsCount * ticketPrice
 }
 
+// #11 Function to populate the UI
+// Get data from local storage for UI
+function populateUI() {
+	const selectedSeats = JSON.parse(localStorage.getItem('selectedSeats'))
+
+	// #11a
+	if (selectedSeats !== null && selectedSeats.length > 0) {
+		seats.forEach((seat, index) => {
+			if (selectedSeats.indexOf(index) > -1) {
+				seat.classList.add('selected')
+			}
+		})
+	}
+
+	// 11b
+	const selectedMovieIndex = localStorage.getItem('selectedMovieIndex')
+	if (selectedMovieIndex !== null) {
+		movieSelect.selectedIndex = selectedMovieIndex
+	}
+
+	console.log(selectedSeats)
+}
+
 // #6 Add new event listener for changes in the Movie select Event
 movieSelect.addEventListener('change', e => {
 	ticketPrice = +e.target.value
@@ -41,6 +68,7 @@ movieSelect.addEventListener('change', e => {
 	// #9 Local Storage for movieSelect
 	setMovieData(e.target.selectedIndex, e.target.value)
 
+	// #6 part of 6
 	updateSelectedCount()
 })
 
@@ -55,3 +83,5 @@ container.addEventListener('click', e => {
 		updateSelectedCount()
 	}
 })
+//  #12 Initial count and total set
+updateSelectedCount()
